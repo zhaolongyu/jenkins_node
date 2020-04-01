@@ -1,1 +1,0 @@
-mkdir  /usr/local/src/dir
