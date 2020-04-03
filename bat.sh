@@ -1,4 +1,5 @@
 cnpm install
 npm run build
+docker stop  `docker ps -aq --filter ancestor=jenkins_nginx_vue_demo:v1`
 docker build -t jenkins_nginx_vue_demo:v1  .
 docker run -d -p 8090:80 jenkins_nginx_vue_demo:v1
