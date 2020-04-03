@@ -25,16 +25,12 @@ export default {
   computed: {
     ...mapState({
       a: state => {
-        console.log(state);
         return state.stoken;
       },
       b: state => state.list
     })
   },
   mounted() {
-    console.log(this, this.b);
-    // console.log(this.$store.commit("modulesA/savelist"));
-    // console.log(this.$store.dispatch("add"));
     this.savelist();
   },
   methods: {
@@ -57,7 +53,6 @@ export default {
     registered() {
       this.axios.post("/api/registered", this.data).then(() => {
         // alert(res.data.msg);
-        // console.log("sssssssssssss");
       });
     }
   }

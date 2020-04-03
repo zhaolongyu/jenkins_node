@@ -13,9 +13,7 @@ export default {
   mounted() {},
   methods: {
     cilckhand(r) {
-      this.axios.get("/api/about").then(res => {
-        console.log(res);
-      });
+      this.axios.get("/api/about").then(() => {});
       switch (r) {
         case "home":
           this.$router.push({ name: "Home" });

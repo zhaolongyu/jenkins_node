@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(jwtRouter("./middlewarejwtRouter"));
 // app.use(loginRouter("./middlewareloginRouter"));
 
+app.use(express.static(__dirname + "/public"));
+
 app.use("/", api);
 
 app.listen(3001, () => {
