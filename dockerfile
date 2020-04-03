@@ -4,7 +4,6 @@ MAINTAINER zyl_facode
 
 RUN npm install
 
-
 COPY  ./dist    /usr/share/nginx/html/ 
 CD /usr/share/nginx/html/
 CMD ["npm", "start"]
