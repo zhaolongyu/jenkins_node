@@ -1,8 +1,6 @@
 cnpm install
 npm run build
 
-cp -r server/. dist 
-
 docker ps -a | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
