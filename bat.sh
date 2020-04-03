@@ -4,12 +4,14 @@ npm run build
 docker ps | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
+   npm -v
    docker stop  `docker ps -aq --filter ancestor=jenkins_nginx_vue_demo:v1`
 fi
 
 docker images | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
+   node -v
    docker rmi  -f  jenkins_nginx_vue_demo
 fi
 
