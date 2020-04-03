@@ -1,7 +1,7 @@
 cnpm install
 npm run build
 
-docker ps | grep jenkins_nginx_vue_demo &> /dev/null
+docker ps -a | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
    npm -v
@@ -12,7 +12,7 @@ docker images | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
    node -v
-   docker rmi  -f  jenkins_nginx_vue_demo
+   docker rmi  -f  jenkins_nginx_vue_demo:v1
 fi
 
 
