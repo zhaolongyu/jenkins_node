@@ -6,7 +6,11 @@ if [ $? -eq 0 ]
 then
    npm -v
    docker stop  `docker ps -aq --filter ancestor=jenkins_nginx_vue_demo:v1`
+   docker container prune
+   y
 fi
+
+
 
 docker images | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
