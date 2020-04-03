@@ -10,7 +10,7 @@ fi
 docker images | grep jenkins_nginx_vue_demo &> /dev/null
 if [ $? -eq 0 ]
 then
-   docker image rm -f  jenkins_nginx_vue_demo
+   docker rmi  -f  jenkins_nginx_vue_demo
 fi
 
 
