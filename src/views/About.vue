@@ -1,5 +1,32 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div>
+    <button @click="cilckhand('home')">跳转home</button>
+    <button @click="cilckhand('header')">跳转header</button>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {
+    cilckhand(r) {
+      this.axios.get("/api/about").then(res => {
+        console.log(res);
+      });
+      switch (r) {
+        case "home":
+          this.$router.push({ name: "Home" });
+          break;
+        case "header":
+          this.$router.push({ path: "/header" });
+          break;
+      }
+    }
+  }
+};
+</script>
+
+<style></style>

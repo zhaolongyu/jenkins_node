@@ -1,6 +1,10 @@
-#制定node镜像的版本
-FROM nginx:latest
-#声明作者
+FROM nginx:latest 
+FROM node:8.9-alpine
 MAINTAINER zyl_facode
-#移动当前目录下面的文件到app目录下
-COPY  ./dist    /usr/share/nginx/html/  
+
+RUN npm install
+
+
+COPY  ./dist    /usr/share/nginx/html/ 
+CD /usr/share/nginx/html/
+CMD ["npm", "start"]
