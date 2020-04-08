@@ -36,7 +36,7 @@ export default {
   methods: {
     ...mapMutations(["savelist"]),
     clickhand() {
-      this.axios.post("/api/login", this.data).then(res => {
+      this.axios.post("/login", this.data).then(res => {
         localStorage.setItem("token", res.data.data);
         if (res.data.code === "200") {
           alert(res.data.msg);
@@ -51,7 +51,7 @@ export default {
       });
     },
     registered() {
-      this.axios.post("/api/registered", this.data).then(() => {
+      this.axios.post("/registered", this.data).then(() => {
         // alert(res.data.msg);
       });
     }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import store from "../store";
 import Router from "../router";
+
 axios.interceptors.request.use(
   config => {
     if (store.state.token) {

@@ -33,17 +33,13 @@ export default {
     };
   },
   methods: {
-    $_myGreatMixin_update: function() {
-      console.log(1);
-    },
+    $_myGreatMixin_update: function() {},
     clickhandl() {
       this.$router.push({
         path: "/about"
       });
     }
   },
-  mounted() {
-    console.log(this.test);
-  }
+  mounted() {}
 };
 </script>

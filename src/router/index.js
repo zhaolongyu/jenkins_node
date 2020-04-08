@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import routes from "./merge.js";
 Vue.use(VueRouter);
 const router = new VueRouter({
+  // mode: "history",
   routes
 });
 router.beforeEach((to, from, next) => {
