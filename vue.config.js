@@ -5,7 +5,7 @@ function resolve(dir) {
 
 module.exports = {
   outputDir: "./server/public",
-  // publicPath: "././",
+  publicPath: "././",
   devServer: {
     proxy: {
       "/api": {
