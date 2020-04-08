@@ -6,6 +6,5 @@
  WORKDIR /app
  RUN npm install
 #  COPY  ./dist    /usr/share/nginx/html/ 
-EXPOSE 3000
 # CD /usr/share/nginx/html/
  CMD ["npm", "start"]
