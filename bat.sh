@@ -18,6 +18,6 @@ then
 fi
 
 
-docker build -t  jenkins_nginx_vue_demo:v1  ./server
+docker build -t  jenkins_nginx_vue_demo:v1  ./server/
 docker run -d -p 8090:3001   jenkins_nginx_vue_demo:v1
 npm -v
