@@ -8,13 +8,14 @@ const api = require("./api/index");
 // var JwtStrategy = require("passport-jwt").Strategy,
 //   ExtractJwt = require("passport-jwt").ExtractJwt;
 var app = express();
-app.use(
-  cors({
-    origin: ["http://47.100.188.145:8090"],
-    methods: ["GET", "POST"],
-    alloweHeaders: ["Conten-Type", "Authorization"]
-  })
-);
+var cors1 = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "PUT"],
+  alloweHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+};
+app.use(cors(cors1));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(jwtRouter("./middlewarejwtRouter"));

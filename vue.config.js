@@ -5,7 +5,7 @@ function resolve(dir) {
 
 module.exports = {
   outputDir: "./server/public",
-  publicPath: "././",
+  // publicPath: "././",
   devServer: {
     proxy: {
       "/api": {
@@ -17,7 +17,7 @@ module.exports = {
         }
       }
     }
-    // host: "127.0.0.1",
+    // hos  t: "127.0.0.1",
     // port: 9099
   },
   chainWebpack: config => {

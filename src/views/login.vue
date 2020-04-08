@@ -5,7 +5,7 @@
     <input type="text" v-model="data.password" />
     <br />
     <button @click="clickhand">登录</button>
-    <!-- <button @click="registered">注册</button> -->
+    <button @click="registered">跳转</button>
   </div>
 </template>
 

@@ -1,9 +1,10 @@
 import axios from "axios";
 import store from "../store";
 import Router from "../router";
-
+// console.log(localStorage.getItem("token"));
 axios.interceptors.request.use(
   config => {
+    // console.log(localStorage.getItem("token"));
     if (store.state.token) {
       config.headers = {
         token: localStorage.getItem("token")
@@ -17,11 +18,12 @@ axios.interceptors.request.use(
 );
 axios.interceptors.response.use(
   config => {
+    // console.log(localStorage.getItem("token"));
     store.commit("tokenBooleanTrue");
     config.headers = {
       token: localStorage.getItem("token")
     };
-    console.log(config);
+    // console.log(config);
     return config;
   },
   err => {
