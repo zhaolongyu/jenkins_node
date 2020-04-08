@@ -7,7 +7,9 @@ const cors = require("cors");
 const api = require("./api/index");
 // var JwtStrategy = require("passport-jwt").Strategy,
 //   ExtractJwt = require("passport-jwt").ExtractJwt;
+
 var app = express();
+
 var cors1 = {
   origin: "*",
   optionsSuccessStatus: 200,

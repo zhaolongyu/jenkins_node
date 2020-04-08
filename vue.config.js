@@ -5,6 +5,7 @@ function resolve(dir) {
 
 module.exports = {
   outputDir: "./server/public",
+  // 生产
   publicPath: "././",
   devServer: {
     proxy: {

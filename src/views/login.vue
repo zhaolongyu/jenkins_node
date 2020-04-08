@@ -5,7 +5,7 @@
     <input type="text" v-model="data.password" />
     <br />
     <button @click="clickhand">登录</button>
-    <button @click="registered">跳转</button>
+    <button @click="registered">注册</button>
   </div>
 </template>
 
@@ -51,8 +51,9 @@ export default {
       });
     },
     registered() {
-      this.axios.post("/registered", this.data).then(() => {
+      this.axios.post("/regis", this.data).then(res => {
         // alert(res.data.msg);
+        console.log(res);
       });
     }
   }
