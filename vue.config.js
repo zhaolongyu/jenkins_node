@@ -17,7 +17,7 @@ module.exports = {
         }
       }
     }
-    // hos  t: "127.0.0.1",
+    // host: "127.0.0.1",
     // port: 9099
   },
   chainWebpack: config => {
