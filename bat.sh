@@ -19,5 +19,5 @@ fi
 
 
 docker build -t  jenkins_nginx_vue_demo:v1  .
-docker run -d -p 8090:3001   jenkins_nginx_vue_demo:v1
+docker run -d -p 8090:3000   jenkins_nginx_vue_demo:v1
 npm -v
