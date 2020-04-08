@@ -10,7 +10,7 @@ const api = require("./api/index");
 var app = express();
 app.use(
   cors({
-    origin: ["http://localhost:8090"],
+    origin: ["http://47.100.188.145:8090"],
     methods: ["GET", "POST"],
     alloweHeaders: ["Conten-Type", "Authorization"]
   })
