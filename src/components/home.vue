@@ -11,14 +11,14 @@
     or
     <hr />
     <!-- 生产 
-    action="http://47.100.188.145:3001/update"
+    action="http://47.100.188.145:8090/update"
     -->
     <!--  
     action="http://localhost:3001/update"-->
     <el-upload
       class="upload-demo"
       drag
-      action="http://47.100.188.145:3001/update"
+      action="http://47.100.188.145:8090/update"
       multiple
       :file-list="fileList"
     >
