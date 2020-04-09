@@ -1,75 +1,72 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank">
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank">
-          Forum
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank">
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank">
-          Twitter
-        </a>
-      </li>
-      <br />
-      <li>
-        <a href="http://vuejs-templates.github.io/webpack/" target="_blank">
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a href="http://router.vuejs.org/" target="_blank">
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a href="http://vuex.vuejs.org/" target="_blank">
-          vuex
-        </a>
-      </li>
-      <li>
-        <a href="http://vue-loader.vuejs.org/" target="_blank">
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a href="https://github.com/vuejs/awesome-vue" target="_blank">
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+    <el-card class="box-card" v-for="(coll, index) of columns" :key="index">
+      <div slot="header" class="clearfix">
+        <span>{{ coll.from }}</span>
+        <el-button
+          style="float: right; padding: 3px 5px"
+          type="text"
+          @click="handcard(coll)"
+          >预览</el-button
+        >
+        <el-button
+          style="float: right; padding: 3px 0"
+          type="text"
+          @click="handDelete(coll)"
+          >删除</el-button
+        >
+      </div>
+      <!-- <div
+        style="height:100px"
+        @click="handcard(coll)"
+        v-html="coll.messageContent"
+      >
+        {{ converter.makeHtml(coll.messageContent) }}
+      </div> -->
+      <vue-markdown>{{ coll.messageContent }}</vue-markdown>
+    </el-card>
   </div>
 </template>
 
 <script>
+import VueMarkdown from "vue-markdown";
 export default {
   name: "HelloWorld",
+  components: {
+    VueMarkdown
+  },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      columns: []
     };
+  },
+  methods: {
+    handDelete(val) {
+      this.axios.post("/delete", { from: val.from }).then(res => {
+        if (res.data.code === "200") {
+          this.page();
+        }
+      });
+    },
+    handcard(val) {
+      this.$emit("handcard", val);
+    },
+    page() {
+      this.axios.get("/page", { params: { skip: 0, page: 10 } }).then(res => {
+        this.columns = res.data.data;
+      });
+    }
+  },
+
+  mounted() {
+    this.page();
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1,
+/* h1,
 h2 {
   font-weight: normal;
 }
@@ -83,5 +80,5 @@ li {
 }
 a {
   color: #42b983;
-}
+} */
 </style>

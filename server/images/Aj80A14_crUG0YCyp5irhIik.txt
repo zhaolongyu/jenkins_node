@@ -1,0 +1,1379 @@
+//没用代码  ，之后改成axios ，样式 ，图标
+ 
+
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ include file="/WEB-INF/jsp/common/include/tags.jsp"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="${base}/resources/assets/global/plugins/element-ui/css/element-ui.min.css" rel="stylesheet">
+    <style>
+        <%--下拉框的--%>
+        .body {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .searchSelectStyle {
+            background-color: #f5f7fa;
+            color: #333;
+            vertical-align: middle;
+            /*display: table-cell;*/
+            /*position: relative;*/
+            border: 1px solid #dcdfe6;
+            border-right:0px;
+            /*border-radius: 4px;*/
+            /*border-top-right-radius: 0;*/
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            padding: 0 20px ;
+            /*margin-left: 10px;*/
+            white-space: nowrap;
+            font-size: 12px;
+            line-height: 32px;
+            /*width:10%;*/
+        }
+        .searchSelectStyleDiv .el-input__inner{
+            border-bottom-left-radius: 0px !important;
+            border-top-left-radius: 0px !important;
+        }
+        <%--分页--%>
+        .tablePagination{
+            float: right;
+        }
+        <%--分页--%>
+        .formStyleTop{
+            /*border:1px solid red;*/
+            /*width:100px;*/
+            margin:20px 20px 20px  0;
+        }
+        .inputWidth{
+            width:28%;
+        }
+        /*页面1 2 3的按钮*/
+        #Tbutton{
+            text-align:center;
+        }
+        /*页面2*/
+        .p-label{
+            padding-right: 20px;
+
+        }
+        .form-p .border-bottom{
+            border-bottom: 1px solid #ccc;
+        }
+        .padding-left-right{
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .padding-top{
+            padding-top: 5px;
+        }
+        .form-p{
+            border-bottom: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+
+        }
+        .width202{
+            width: 242px;
+        }
+        .form-input{
+            width: 242px;
+        }
+        .form-p .p-el-form-item{
+            border-top:1px solid #ccc;
+            margin-top:0px;
+            margin-bottom: 0px;
+
+        }
+        .form-p  .p-el-form-item >.el-form-item__content{
+            /* padding-left: 20px;
+            padding-right: 20px; */
+            border-left: 1px solid #ccc;
+        }
+        .form-p .el-form-item__label{
+
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            height: 100%;
+            display: inline-block;
+        }
+        .form-p .label-item{
+            border-right: 1px solid #ccc;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
+        .form-p .el-form-item__error{
+            position: inherit;
+            /*padding: 10px;*/
+            margin-bottom: 5px;
+        }x
+         .form-p {
+             /*padding: 10px !important;*/
+             /*margin: 5px;*/
+         }
+        /* .el-form-item__content{
+          border-left: 1px solid #ddd;
+        } */
+
+        /*图表的*/
+        .drawChartpm{
+            padding:20px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" style="padding:10px;min-width:1000px">
+    <div title="表" v-if="tableAndCreate" id="zh_table">
+        <el-row style="max-width:90%">
+            <el-col :span="24" title="搜索"><%--搜索--%>
+                <div style="display: flex" id="sreachButton">
+                    <div style="display: flex">
+                        <div class='searchSelectStyle'>优化方案</div>
+                        <div class="searchSelectStyleDiv">
+                            <el-select size="medium" v-model="query.optPlanId" clearable placeholder="请选择" style=" margin-right: 20px;">
+                                <el-option
+                                        v-for="item in options.modeloptOptPlans"
+                                        :key="item.optPlanId"
+                                        :label="item.optPlanName"
+                                        :value="item.optPlanId">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                    <div style="margin-right:10px;">
+                        <el-button :size="buttonSize" @click="getList(this.page)" :type="buttonType">查询</el-button>
+                        <el-button :size="buttonSize" @click="clickSearchCreate('sreahCreate')" :type="buttonType">新增</el-button>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="24" style="margin-top:1%"><%--表--%>
+                <el-table
+                        id = 'tableHeight'
+                        size="small"
+                        :data="rows"
+                        border
+                        style="width: 100%"
+                        :height="tableHeight"
+                        highlight-current-row="true"
+                >
+                    <el-table-column
+                            v-for="item in columns" :key="item.name"
+                            :prop="item.name"
+                            :label="item.label">
+                    </el-table-column>
+                    <el-table-column
+                            label="操作">
+                        <template slot-scope="scope">
+                            <el-button :type="buttonType" @click="tableClickCheck(scope.row,'Check')" :size="buttonSize">查看</el-button>
+                            <el-button :type="buttonType" @click="tableClickCheck(scope.row,'edit')" :size="buttonSize">编辑</el-button>
+                            <el-button :type="buttonType" @click="tableClickCheck(scope.row,'create')" :size="buttonSize">引用</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+            <el-col :span="24"><%--分页--%>
+                <div class="tablePagination" style="margin-top:0px">
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            background
+                            small
+                            :total="page.total"
+                            :current-page="page.pageS"
+                            :page-size="page.limit"
+                            :page-sizes="[10, 20, 30, 40]"
+                            layout="total, sizes, prev, pager, next, jumper">
+                    </el-pagination>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+    <div id="tCreate" v-if="!tableAndCreate">
+        <el-row>
+            <el-col  :span="24">
+                <div>
+                    <el-row>
+                        <el-col  :span="24">
+                            <el-steps :active="stepsActive" simple id="Tsteps">
+                                <el-step title="优化方案命名" icon="el-icon-edit"></el-step>
+                                <el-step title="基本参数" icon="el-icon-upload"></el-step>
+                                <el-step title="结果输出" icon="el-icon-picture"></el-step>
+                            </el-steps>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-col>
+            <el-col  :span="24" v-if="stepsActive===1">
+                <div class="formStyleTop">
+                    <el-form  :model="form" :rules="ruleArr" ref="tRuleForm" label-width="150px"  size="medium">
+                        <el-form-item label="活动名称" prop="optPlanName" required>
+                            <el-input :disabled="isDisbale" @change="change(form,form.optPlanName,'optPlanName')" size="small" class="inputWidth"  v-model="form.optPlanName" placeholder="请输入活动名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="资产分类方案" prop="planSid" required>
+                            <el-select :disabled="isDisbale" @change="change(form,form.planSid,'planSid')" size="small" class="inputWidth" v-model="form.planSid" placeholder="请选择资产分类方案">
+                                <el-option
+                                        v-for="(item,i) in formOpstion.TassetsOpstions"
+                                        :label="item.planName"
+                                        :value="item.planSid">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="账户" prop="accountId" required>
+                            <el-select :disabled="isDisbale" @change="change(form,form.accountId,'accountId')" size="small" class="inputWidth"  v-model="form.accountId" placeholder="请选择账户">
+                                <el-option
+                                        v-for="(item,i) in formOpstion.TaccountOpstions"
+                                        :label="item.vcFundnameL1"
+                                        :value="item.vcFundnameL1">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="约束方案" prop="constraintId" required>
+                            <el-select :disabled="isDisbale" @change="change(form,form.constraintId,'constraintId')" size="small" class="inputWidth"  v-model="form.constraintId" placeholder="请选择约束方案">
+                                <el-option
+                                        style="width:232.39px"
+                                        v-for="(item,i) in formOpstion.TconstraintOpstions"
+                                        :label="item.constraintName"
+                                        :value="item.constraintId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-col>
+            <el-col  :span="24" v-if="stepsActive===2">
+                <div class="formStyleTop">
+                    <el-form :model="ruleForm" id="TopForm" style="overflow-x: hidden;" :rules='ruleArr' ref="ruleForm" label-width="200px" class="demo-ruleForm form-p">
+                        <el-form-item label="模型选择" :rules="[{ required: true, message: '请选择模型选择', trigger: 'change'}]"  prop="modelType"   class='p-el-form-item'>
+                            <div class="padding-left-right padding-top">
+                                <el-select size="small" :disabled="isDisbale"  v-model="ruleForm.modelType" placeholder="请选择">
+                                    <el-option
+                                            v-for="item in modeOptions"
+                                            :key="item.dictCode"
+                                            :label="item.dictName"
+                                            :value="item.dictCode">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="回测样本区间"  :rules="[{ required: true, message: '请选择回测样本区间', trigger: 'change'}]"  prop="date"   class='p-el-form-item'>
+                            <div class="padding-left-right padding-top">
+                                <el-date-picker
+                                        size="small"
+                                        :disabled="isDisbale"
+                                        v-model="ruleForm.date"
+                                        type="daterange"
+                                        unlink-panels
+                                        range-separator="-"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
+                                </el-date-picker>
+                            </div>
+
+                        </el-form-item>
+                        <el-form-item label="优化目标"  :required='true' prop="optTarget"   class='p-el-form-item'>
+                            <el-row class="border-bottom padding-left-right padding-top" >
+                                <el-col :span='6'> <el-radio @change="change(ruleForm,ruleForm.optTarget,'optTarget')" :disabled="isDisbale" v-model="ruleForm.optTarget" label="OT_AA_0020">无条件优化</el-radio></el-col>
+                                <el-col :span='18'>
+                                    <el-form-item    prop="nonCondiOptTarget" :rules="[{ required: ruleForm.optTarget==='OT_AA_0020', message: '请选择优化目标', trigger: 'change'}]">
+                                        <el-select size="small"   v-model="ruleForm.nonCondiOptTarget" placeholder="请选择" :disabled="isDisbale||ruleForm.optTarget!='OT_AA_0020'">
+                                            <el-option
+                                                    v-for="item in targerOptions"
+                                                    :key="item.dictCode"
+                                                    :label="item.dictName"
+                                                    :value="item.dictCode">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row class="padding-left-right" :gutter='20'>
+                                <el-col :span='6' > <el-radio @change="change(ruleForm,ruleForm.optTarget,'optTarget')" :disabled="isDisbale" v-model="ruleForm.optTarget" label="OT_AA_0010">有条件优化</el-radio></el-col>
+                                <el-col :span='12' style="border-left:1px solid #ccc;padding-top: 5px;">
+                                    <el-row>
+                                        <el-col :span='5'><el-radio @change="change(ruleForm,ruleForm.isRisk,'isRisk')" size="small" :disabled="isDisbale||ruleForm.optTarget=='OT_AA_0020'"  v-model="ruleForm.isRisk" label="目标收益"></el-radio></el-col>
+                                        <el-col :span='12'>
+                                            <el-form-item    prop="targetRation"  :rules="[{ required:ruleForm.optTarget === 'OT_AA_0010' && ruleForm.isRisk === '目标收益', message: '请填写目标收益', trigger: 'change'}]">
+                                                <el-input size="small" v-model="ruleForm.targetRation" :disabled="isDisbale||ruleForm.optTarget=='OT_AA_0020'||ruleForm.isRisk!='目标收益'">
+                                                    <template slot="append">%</template>
+                                                </el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span='5'><el-radio @change="change(ruleForm,ruleForm.isRisk,'isRisk')" :disabled="isDisbale||ruleForm.optTarget=='OT_AA_0020'" v-model="ruleForm.isRisk" label="目标风险"></el-radio></el-col>
+                                        <el-col :span='12'>
+                                            <el-form-item prop="targetRisk" :rules="[{ required:ruleForm.optTarget === 'OT_AA_0010' && ruleForm.isRisk === '目标风险', message: '请填写目标风险', trigger: 'blur'}]">
+                                                <el-input size="small" v-model="ruleForm.targetRisk"  :disabled="isDisbale||ruleForm.optTarget=='OT_AA_0020'||ruleForm.isRisk=='目标收益'">
+                                                    <template slot="append">%</template>
+                                                </el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="数据滚动时长"   :rules="[{ required: true, message: '请输入数据滚动时长', trigger: 'blur'}]"  class='p-el-form-item'  prop="datarollingTime" >
+                            <el-row class=" padding-left-right padding-top form-input">
+                                <el-input size="small" :disabled="isDisbale" v-model="ruleForm.datarollingTime">
+                                    <template slot="append">月</template>
+                                </el-input>
+                            </el-row>
+                        </el-form-item>
+
+                        <el-form-item label="调仓频率" :rules="[{ required: true, message: '请输入调仓频率', trigger: 'blur'}]"  prop="warehouseAdjFreq"   class='p-el-form-item'>
+                            <el-row class=" padding-left-right padding-top form-input">
+                                <el-input size="small" :disabled="isDisbale" v-model="ruleForm.warehouseAdjFreq">
+                                    <template slot="append">月/次</template>
+                                </el-input>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="无风险利率"   :rules="[{ required: true, message: '请输入无风险利率', trigger: 'blur'}]"   prop='nonRiskRation' class='p-el-form-item'>
+                            <el-row class=" padding-left-right padding-top form-input">
+                                <el-input size="small" :disabled="isDisbale" v-model="ruleForm.nonRiskRation">
+                                    <template slot="append">%</template>
+                                </el-input>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="有效前沿是否计算散点"   :required="true"   prop="isDoted"   class='p-el-form-item'  >
+                            <el-row class="border-bottom padding-left-right padding-top" >
+                                <el-col :span='4'> <el-radio :disabled="isDisbale" v-model="ruleForm.isDoted" label="YN_AA_0010">是</el-radio></el-col>
+                                <el-col :span='12'>
+                                    <el-row class=" padding-left-right  form-input">
+                                        <el-form-item  prop="dotedTimes" :rules="[{ required:ruleForm.isDoted=== 'YN_AA_0010' , message: '请输入散点数', trigger: 'blur'}]" >
+                                            <el-input  size="small" v-model="ruleForm.dotedTimes"   :disabled="isDisbale|| ruleForm.isDoted!='YN_AA_0010'">
+                                                <template slot="append">万次</template>
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                            <el-row class="padding-left-right">
+                                <el-col :span='6'> <el-radio @change="change(ruleForm,ruleForm.isDoted,'isDoted')"  size="small" :disabled="isDisbale" v-model="ruleForm.isDoted" label="YN_AA_0020">否</el-radio></el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item  class='p-el-form-item' label="计算VaR的各类别相关系数"  :required="true"  prop="dataTimes">
+                            <el-row class="border-bottom padding-left-right padding-top" >
+                                <el-col :span='6'> <el-radio @change="change(ruleForm,ruleForm.dataTimes,'dataTimes')" size="small" :disabled="isDisbale" v-model="ruleForm.dataTimes" label="DT_AA_0010">最近三年月度数据</el-radio></el-col>
+                            </el-row>
+                            <el-row class="padding-left-right">
+                                <el-col :span='6'> <el-radio size="small" :disabled="isDisbale" v-model="ruleForm.dataTimes" label="DT_AA_0020">数据时长自定义</el-radio></el-col>
+                                <el-col :span='18'>
+                                    <el-form-item   :rules="[{ required:ruleForm.dataTimes=== 'DT_AA_0020' , message: '请选择数据时长', trigger: 'blur'}]"  prop="date2">
+                                        <el-date-picker
+                                                size="small"
+                                                format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                                                v-model="ruleForm.date2"
+                                                type="daterange"
+                                                unlink-panels
+                                                range-separator="-"
+                                                start-placeholder="开始日期"
+                                                end-placeholder="结束日期" :disabled="isDisbale||ruleForm.dataTimes!='DT_AA_0020'">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="保费流入金额"   :rules="[{ required: true, message: '请输入保费流入金额', trigger: 'blur'}]"   prop="premiumInflow"   class='p-el-form-item'>
+                            <el-row class="padding-left-right padding-top form-input">
+                                <el-input size="small" :disabled="isDisbale" v-model="ruleForm.premiumInflow">
+                                    <template slot="append">万元</template>
+                                </el-input>
+                            </el-row>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-col>
+            <el-col  :span="24" v-if="stepsActive===3" >
+                <div >
+                    <el-row style="min-width:600px">
+                        <%--  //双饼图--%>
+                        <el-col :span="8" class="drawChartpm">
+                            <div id="doublePie" style="width: 100%;height:400px;background:#f8f8f8"></div>
+                        </el-col>
+                        <%--  //资产分类 表 --%>
+                        <el-col :span="16" class="drawChartpm">
+                            <el-table
+                                    :data="tableData1"
+                                    style="width:100%;margin-bottom: 20px;height:400px"
+                                    row-key="id"
+                                    border
+                                    default-expand-all
+                                    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+                                <el-table-column
+                                        prop="date"
+                                        label="日期"
+                                        width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="姓名"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                        prop="address"
+                                        label="地址">
+                                </el-table-column>
+                            </el-table>
+                        </el-col>
+                        <%--  //折线图  有效前言--%>
+                        <el-col :span="24" class="drawChartpm">
+                            <div id="main" style="width:100%;height:400px;background:#f8f8f8"></div>
+                        </el-col>
+                        <%--  柱状图 月资产回报--%>
+                        <el-col :span="24" class="drawChartpm">
+                            <div id="columnarFigure" style="width: 100%;height:400px;background:#f8f8f8"></div>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-col>
+            <el-col  :span="24" >
+                <div id="Tbutton">
+                    <el-button :type="buttonType" :size="buttonSize" @click="Clicknext('next',$event)" key="next" v-if="stepsActive === 1"> 下一步 </el-button>
+                    <el-button :type="buttonType" :size="buttonSize" @click="Clicknext('previous',$event)" key="previous" v-if="stepsActive !== 1"> 上一步 </el-button>
+                    <el-button :type="buttonType" :size="buttonSize" @click="Clicknext('optimize',$event)" key="optimize" v-if="stepsActive === 2"> 开始优化 </el-button>
+                    <el-button :type="buttonType" :size="buttonSize" @click="Clicknext('close',$event)" key="close"> 返回列表 </el-button>
+                </div>
+            </el-col>
+
+        </el-row>
+
+
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="${base}/resources/assets/global/plugins/vue/vue.min.js"></script>
+<script type="text/javascript" src="${base}/resources/assets/global/plugins/element-ui/js/element-ui.min.js"></script>
+<script type="text/javascript" src="${base}/resources/assets/global/plugins/element-ui/js/zh-CN.js"></script>
+<script type="text/javascript" src="${base}/resources/assets/global/plugins/vue/axios.min.js"></script>
+<%--<script type="text/javascript" src="${base}/resources/assets/global/plugins/echarts-4.2.0/echarts.min.js"></script>--%>
+<script src="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts.min.js"></script>
+<script type="text/javascript">
+  ELEMENT.install(Vue)
+  const base = '${base}'
+  var app5 = new Vue({
+    el: '#app',
+    data: {
+      //控制 只读
+      isDisbaleType:false,
+      //控制 提示 显示的时间
+      messageShowTime:1000,
+      //按钮的样式
+      buttonSize:'small',//medium/small/mini
+      buttonType:'primary', //primary / success / warning / danger / info / text
+      // 控制显隐
+      tableAndCreate:true,
+      // 表格
+      options: {
+        modeloptOptPlans: []
+      },
+      query: {
+        optPlanId: ''
+      },
+      // 表格
+      rows: [],
+      columns: [
+        { name: 'optPlanName', label: '优化方案' },
+        { name: 'modelName', label: '模型名称' },
+        { name: 'accountIds', label: '账户信息' },
+        { name: 'createUserName', label: '创建人' },
+        { name: 'createDate', label: '计算时间' }
+      ],
+      // 分页
+      page: {
+        pageS: 1, //当前页数
+        limit: 10, //显示数量
+        total: 10,//总数
+      },
+      //新增
+      //步骤条
+      stepsActive: 1,
+      //步骤条 页面1
+      form: {  //页面一的数据
+        optPlanName: '',
+        planSid:'',
+        constraintId: '',
+        accountId:''
+      },
+      formOpstion:{  //页面一的opstion 下拉
+        TassetsOpstions:[{
+          planName: '选项2',
+          planId: '黄金糕1'
+        }],
+        TconstraintOpstions:[{
+          planName: '选项2',
+          planId: '黄金糕1'
+        }],
+        TaccountOpstions:[{
+          vcFundname: '选项2',
+          vcFundcode: '黄金糕1'
+        }]
+      },
+      //步骤条 页面2
+      ruleForm:{ //页面 2 的 值
+        isDoted:'',
+        dataTimes:'',
+        date2:[],
+        premiumInflow:"",
+        dotedTimes:"",
+        modelType:"",
+        date :[],
+        nonCondiOptTarget:'',
+        optTarget:'',
+        targetRation:'',
+        isRisk :'',
+        scatter:'',
+        targetRisk:'',
+        datarollingTime:'',
+        warehouseAdjFreq :"",
+        nonRiskRation:'',
+        loopbackTestStartStr:'',
+        loopbackTestEndStr:"",
+        dataTimesStartStr:'',
+        dataTimesEndStr:''
+      },
+      ruleArr:{
+        //页面1校验
+        optPlanName:[
+          {required: true, message: '请填写活动名称'},
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符' }
+        ],
+        constraintId:[
+          {required: true, message: '请选择约束方案'},
+        ],
+        accountId:[{
+          required: true, message: '请选择资账户'
+        }],
+        planSid:[{
+          required: true, message: '请选择资产分类方案'
+        }],
+        //页面2校验
+        modelType: [
+          { required: true, message: '请选择模型' }
+        ],
+        date: [
+          { required: true, message: '请选择回测样本区间' }
+        ],
+        date2: [
+          { required: true, message: '请选择日期' }
+        ],
+        optTarget: [
+          { required: true, message: '请选择优化目标' }
+        ],
+        nonCondiOptTarget: [
+          // { required: this.ruleForm.optTarget === 'OT_AA_0020', message: '请选择' }
+        ],
+        premiumInflow: [
+          { required: true, message: '请填写保费流入金额' }
+        ],
+        planState: [
+          //   { required: this.ruleForm.optTarget === 'OT_AA_0020', message: '请选择', trigger: 'change' }
+        ],
+        targetRation: [
+          // { required: this.ruleForm.optTarget === 'OT_AA_0010' && this.ruleForm.isRisk === '目标收益', message: '请填写目标收益' }
+        ],
+        targetRisk: [
+          // { required: this.ruleForm.optTarget === 'OT_AA_0010' && this.ruleForm.isRisk === '目标风险', message: '请填写目标风险' }
+        ],
+        nonRiskRation: [
+          { required: true, message: '请填写无风险利率' }
+        ],
+        scatter: [
+          { required: true, message: '请填写多少万次' }
+        ],
+        dataTimes:[
+          { required: true, message: '请选择计算VaR的各类别相关系数' }
+        ],
+        isDoted:[
+          { required: true, message: '请选择有效前沿是否计算散点' }
+        ],
+        dotedTimes: [
+          // { required: this.ruleForm.isDoted === 'YN_AA_0010', message: '请填写散点数' }
+        ],
+        warehouseAdjFreq: [
+          { required: true, message: '请填写调仓频率' }
+        ],
+        datarollingTime: [
+          { required: true, message: '数据滚动时长' }
+        ]
+      },
+      modeOptions: [],//页面2的 模型选择下拉
+      targerOptions: [], // 页面2的 优化目标下拉
+
+      // echart 图表  页面3  ————————————————————
+      chartHeight: '500px',
+      chartWidth: '500px',
+      seriesData:{},
+      seriesDataDoublePie: {
+        yield: '1212',
+        risk: '1212',
+        lineType: '11121',
+        title: '保存为图标',
+        parentData: [
+          {value: 335, name: '直达', selected: true},
+          {value: 679, name: '营销广告'},
+          {value: 1548, name: '搜索引擎'}],
+        datas: [
+          {value: 335, name: '直达'},
+          {value: 120, name: '邮件营销'},
+          {value: 234, name: '联盟广告'},
+          {value: 135, name: '视频广告'},
+          {value: 1048, name: '百度'},
+          {value: 251, name: '谷歌'},
+          {value: 147, name: '必应'},
+          {value: 102, name: '其他'}],
+        legendData: ['直达', '营销广告']
+      },  //双饼图
+      tableData1: [{
+        id: 3,
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄',
+        children: [{
+          id: 31,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          id: 32,
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }]
+      }], //资产表
+
+      areaStyleColumnarFigure: {
+
+      },
+      seriesDataColumnarFigure: {
+
+      },
+    },
+    props: {
+    },
+    mounted:function(){
+      this.getList()
+      this.getOption()
+      window.addEventListener("resize",this.debounce()); // 防抖控制按钮距离
+    },
+    computed:{
+      tableHeight:function(){ //页面的table的高度
+        let buttonH = document.getElementById('sreachButton').scrollHeight
+        let PaginationH = document.getElementsByClassName('tablePagination')[0].scrollHeight
+        console.log(document.documentElement.clientHeight,buttonH,PaginationH)
+        return (document.documentElement.clientHeight - buttonH - PaginationH - 100)
+      },
+      //页面2
+      isDisbale:function () {
+        // let val = false
+        // switch (this.isDisbaleType) {
+        //   case 'add': val = false; break
+        //   case 'read': val = true; break
+        //   case 'edit': val = false; break
+        // }
+        return this.isDisbaleType
+      }
+    },
+    methods: {
+      debounce:function() { // 防抖控制按钮距离
+        let _self = this;
+        var timer = null;
+          return function(){
+          if(timer !== null){
+            clearTimeout(timer);
+          }
+          timer = setTimeout(function(){
+            _self.tHeight()
+          },100);
+        }
+      },
+      getOption:function() {  // 搜索 下拉
+        let rf = this;
+        var ajax = new XMLHttpRequest();
+        let url1 = base + '/app/tpmodel/modeloptOptPlan/getOptionList'
+        ajax.onreadystatechange = function () {
+          if (ajax.readyState==4 && ajax.status==200) {
+            console.log(JSON.parse(ajax.responseText));
+          }
+        }
+        ajax.open('get',url1,true);
+        ajax.send();
+        // axios.get(url1).then(function(res){
+        //    rf.options.modeloptOptPlans = JSON.parse(ajax.responseText).result.modeloptOptPlans
+        // })
+      },
+      getList:function(){  // 页面开始表格
+        let rf = this;
+        var obj = 'pageS='+this.page.pageS+'&limit='+this.page.limit+'&optPlanId='+this.query.optPlanId
+        let url = base + '/app/tpmodel/modeloptOptPlan/planList?'+obj;
+        var ajax = new XMLHttpRequest();
+        ajax.onreadystatechange = function () {
+          if (ajax.readyState==4 && ajax.status==200) {
+            console.log(JSON.parse(ajax.responseText))
+            rf.rows = JSON.parse(ajax.responseText).result.rows
+            rf.page.total = JSON.parse(ajax.responseText).result.total
+          }
+        }
+        ajax.open('get',url,true);
+        ajax.send();
+      },
+      handleSizeChange:function(val) { // 分页 几条几页 的方法
+        this.page.limit = val
+        this.page.pageS = 1
+        // this.query.optPlanId = ''
+        this.getList()
+      },
+      handleCurrentChange:function(val) {// 分页 翻页 的方法
+        console.log(2222222222)
+        this.page.pageS = val
+        this.page.limit = 10
+        // this.query.optPlanId = ''
+        this.getList()
+      },
+      //change事件
+      change:function(val,res,req){
+        console.log(val,res,req)
+        switch (req) {
+          case 'accountId':this.form.constraintId = '' ;break
+          case 'optTarget':
+            if(res==='OT_AA_0010'){
+              this.ruleForm.nonCondiOptTarget = ''
+            }else{
+              this.ruleForm.isRisk = ''
+              this.ruleForm.targetRisk = ''
+              this.ruleForm.targetRation = ''
+            };break
+          case 'isRisk':
+            if(res==='目标收益'){
+              this.ruleForm.targetRisk = ''
+            }else{
+              this.ruleForm.targetRation = ''
+            };break
+          case 'isDoted': this.ruleForm.dotedTimes = '';break
+          case 'dataTimes': this.ruleForm.date2 = [];break
+        }
+      },
+      // 返回列表 和 新增
+      clickSearchCreate:function(val){    // 页面1 2 下拉 来源
+
+        let rf = this
+        this.stepsActive = 1
+        this.tableAndCreate = !this.tableAndCreate
+        if(val==='sreahCreate'){
+          this.tHeight()  // 需要计算高度
+          let ajax = new XMLHttpRequest();
+          let url1 = base + '/app/tpmodel/modeloptOptPlan/getOptionList'
+          ajax.onreadystatechange = function () {
+            if (ajax.readyState==4 && ajax.status==200) {
+              console.log( JSON.parse(ajax.responseText).result);
+              rf.formOpstion.TconstraintOpstions = JSON.parse(ajax.responseText).result.paramcfgConstrPlans  //约束方案
+              rf.formOpstion.TaccountOpstions = JSON.parse(ajax.responseText).result.dwAccounts  //账户
+              rf.formOpstion.TassetsOpstions = JSON.parse(ajax.responseText).result.paramcfgAssetPlans  //资产分类方案
+              rf.modeOptions =  JSON.parse(ajax.responseText).result.modelTypes  //页面2 模型选择
+              rf.targerOptions =  JSON.parse(ajax.responseText).result.nonCondiOptTarget  //页面2 无条件优化
+
+            }
+          }
+          ajax.open('get',url1,true);
+          ajax.send();
+        }
+      },
+      //计算页面1 2 3高度
+      tHeight:function(){
+        this.$nextTick(function () {
+          let htB = document.getElementById('Tbutton')
+          htB.style.marginTop = '0px'
+          let ht = document.getElementById('tCreate').scrollHeight // form表 的高度
+          // console.log(document.documentElement.clientHeight,ht)
+          htB.style.marginTop = document.documentElement.clientHeight - ht - 100 > 0 // 设置按钮位置
+            ? document.documentElement.clientHeight - ht - 50 + 'px' : '0px'
+          if(this.stepsActive===2){
+            htB.style.marginTop = '0px'
+            let l = document.getElementById('TopForm') //获取form表元素
+            if(htB.style.marginTop === '0px' && ht > document.documentElement.clientHeight){ //如何为0 设置告诉最大为 屏幕
+              l.style.maxHeight = document.documentElement.clientHeight - 100 - 50 + 'px'
+            }else{ //如果不为0 设置告诉最大为 本来高度
+              l.style.maxHeight = document.documentElement.clientHeight - 150  + 'px'
+            }
+            l.style.overflowX='hidden'
+          }
+        })
+      },
+      tableClickCheck:function(val,req){ //table 里面的按钮
+        console.log(val,req)
+        switch(req){
+          case 'Check' :this.isDisbaleType = true ;break  //查看
+          case 'edit' :this.isDisbaleType = false ;break   //编辑
+          case 'create' :this.isDisbaleType = false ;break //引用
+        }
+        if(req !== ''){
+          this.clickSearchCreate('sreahCreate') // 页面1 2 下拉 来源
+        }
+      },
+      // 步骤条事件
+      Clicknext:function(key,target) {
+        switch(key){
+          case 'next' : this.stopsNext() ;break //下一步
+          case 'optimize': this.stepsOptimize() ;break //开始优化
+          case 'close': this.clickSearchReturns('close') ;break //返回列表
+          case 'previous': this.stepsActive-- ;break // 上一步
+        }
+        if(key!=='close'){
+          this.tHeight() //计算高度
+        }
+      },
+      clickSearchReturns:function(){//返回列表
+        this.isDisbaleType = false
+        this.removeValueFun()  // 清除值
+        this.tableAndCreate = !this.tableAndCreate
+      },
+      stopsNext:function(){ // 步骤条下一步  需要校验
+        let rf = this
+        // this.$refs.tRuleForm.validate(function(valid,res){
+        //   if (valid) {
+        rf.stepsActive++
+        //   } else {
+        //     rf.$message({ duration: rf.messageShowTime,
+        //       type: 'error',
+        //       message: '请完善信息'
+        //     })
+        //     return false;
+        //   }
+        // });
+
+      },
+      stepsOptimize:function(){ // 开始优化按钮
+        let rf = this
+
+        // this.$refs.ruleForm.validate(function(valid,res){
+        //   if (valid) {
+        rf.stepsActive++
+        let ajax = new XMLHttpRequest();
+        let url1 = base + '/app/tpmodel/modeloptOptPlan/modelOptimizeResult'
+        let url2 = base + '/app/tpmodel/modeloptOptPlan/modelPlanChooseSave'
+
+        console.log(this.ruleForm)
+          // 值
+        if(this.ruleForm.date[0]){
+          this.ruleForm.loopbackTestStartStr = this.ruleForm.date[0]
+          this.ruleForm.loopbackTestEndStr = this.ruleForm.date[1]
+        }
+        if(this.ruleForm.date2[0]){
+          this.ruleForm.dataTimesStartStr = this.ruleForm.date2[0]
+          this.ruleForm.dataTimesEndStr = this.ruleForm.date2[1]
+        }
+        drawChartDoublePie()  // pie图
+        // ajax.onreadystatechange = function () {
+        //   if (ajax.readyState==4 && ajax.status==200) {
+        //     if(JSON.parse(ajax.responseText)){
+        //       // //页面3 图表的
+        //       rf.$nextTick(function(){
+        //         // rf.drawChart()
+        //         // rf.drawChartColumnarFigure()
+        //
+        //       })
+        //       console.log(JSON.parse(ajax.responseText))
+        //     }
+        //   }
+        // }
+        //
+        // var dataParme = Object.assign({},this.ruleForm)
+        // console.log(dataParme)
+        // Object.assign(dataParme,this.form)
+        // ajax.open('POST',url1,true);
+        // ajax.setRequestHeader('Content-Type', 'application/json')
+        //
+        // ajax.send(JSON.stringify({
+        //   "optPlanName": "wrywrtuq",
+        //   "planSid": "52936542443799539",
+        //   "accountId": "太平人寿-非分红",
+        //   "constraintId": "52732008584971251",
+        //   "modelType": "MT_AA_0010",
+        //   "loopbackTestStartStr": "2017-03-31",
+        //   "loopbackTestEndStr": "2017-09-01",
+        //   "optTarget": "OT_AA_0020",
+        //   "nonCondiOptTarget": "NO_AA_0010",
+        //   "targetRation": "",
+        //   "targetRisk": "",
+        //   "warehouseAdjFreq": "1",
+        //   "nonRiskRation": "1",
+        //   "datarollingTime": "1",
+        //   "dotedTimes": "",
+        //   "isDoted": "YN_AA_0020",
+        //   "dataTimes": "DT_AA_0010",
+        //   "dataTimesStartStr": "2014-01-01",
+        //   "dataTimesEndStr": "2016-12-31",
+        //   "premiumInflow": "12"
+        // }));
+        //  } else {
+        //    console.log('error submit!!',valid,res);
+        //    rf.$message({ duration: rf.messageShowTime,
+        //      type: 'error',
+        //      message: '请完善信息'
+        //    })
+        //    return false;
+        //  }
+        // })
+      },
+      removeValueFun:function(){  // 清除值
+        this.form.optPlanName= ''   //清除数据
+        this.form.planSid='' //清除数据
+        this.form.constraintId= '' //清除数据
+        this.form.accountId='' //清除数据
+        for(let s in this.ruleForm){  // 清除基本参数里面的值
+          if(this.ruleForm[s] instanceof Array){
+            this.ruleForm[s] = []
+          }else{
+            this.ruleForm[s] = ''
+          }
+        }
+        this.query.optPlanId= []  //清空表格
+        this.rows=[]  //清空表格
+      },
+      // echarts 图标  有效前沿图标
+      // 绘制图表
+      drawChart:function () {
+        var chart = echarts.init(document.getElementById('main'));
+        if (chart === undefined) {
+          console.error('echarts init dom id  failed')
+          return
+        }
+        console.log(1111111111111111111)
+        chart.setOption(this.generatorLineOption())
+        let self = this
+        let work = null
+        chart.on('click', function (params) {
+          let body = {
+            yield: params.value[1],
+            risk: params.value[0],
+            lineType: params.seriesName
+          }
+          self.$emit('save', body)
+        })
+        // window.addEventListener('resize', function () {
+        //   self.generatorWithAndHeight()
+        //   if (work === null) {
+        //     work = setTimeout(function () {
+        //       chart.resize()
+        //       work = null
+        //     }, 100)
+        //   }
+        // })
+      },
+      generatorLineOption:function () {
+        // var colors = [
+        //   '#6EB6F2', '#71F16F', '#FFC000', '#384C6C', '#7577F8',
+        //   '#003366', '#AEABAF', '#00F4D2', '#8084F1', '#FF9F4E',
+        //   '#4FA2A9', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+        //   '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089',
+        //   '#FF4F7F', '#CC6666', '#7f7522', '#2b4490', '#333399',
+        //   '#70a19f', '#009299', '#78331e', '#3e4145', '#7bbfea',
+        //   '#339999', '#8f4b38', '#694d9f', '#f26522', '#8e7437',
+        //   '#45b97c', '#74787c', '#afdfe4', '#fdb933', '#bed742',
+        //   '#A20055', '#AA0000', '#C63300', '#0000AA', '#2200AA',
+        //   '#990099', '#00AAAA', '#00AA88', '#00AA55', '#FF1493'
+        // ]
+        console.log('>>>>>>>this.seriesData', this.seriesData)
+        let option = {
+          title: {
+            x: 'center',
+            top: 20,
+            text: this.seriesData.title
+          },
+          toolbox: {
+            right: 20,
+            feature: {
+              saveAsImage: {
+                name: this.seriesData.title
+              }
+            }
+          },
+          tooltip: {
+            formatter: function (params) {
+              var data = params.data || [0, 0]
+              return data[0] + ', ' + data[1]
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '10%',
+            containLabel: true
+          },
+          legend: {
+            orient: 'horizontal',
+            x: 'center',
+            y: 'bottom',
+            data: ['有效前沿', '包络线']
+          },
+          xAxis: {
+            type: 'value',
+            min: this.seriesData.lineMaxAndMin.xmin,
+            max: this.seriesData.lineMaxAndMin.xmax,
+            // min: function (value) {
+            //   return parseInt(value.min)
+            // },
+            splitNumber: 7,
+            axisLabel: {
+              colors: '#f8f8f8'
+
+            },
+            axisLine: {
+              onZero: false,
+              lineStyle: {
+                // color: '#df0000'
+              }
+
+            },
+            nameTextStyle: {
+              color: '#14427a',
+              fontWeight: 'bold',
+              fontSize: '16'
+            },
+            nameGap: '30',
+            nameLocation: 'center',
+            name: '风险( % )'
+
+
+          },
+          yAxis: {
+            name: '年化收益( % )',
+            nameLocation: 'center',
+            nameGap: '30',
+            type: 'value',
+            splitNumber: 5,
+
+            // axisLine: {
+            //   onZero: false,
+            //   lineStyle: {
+            //     // color: '#df0000'
+            //   }
+
+            // },
+            min: this.seriesData.lineMaxAndMin.ymin,
+            max: this.seriesData.lineMaxAndMin.ymax,
+            nameTextStyle: {
+              color: '#14427a',
+              fontWeight: 'bold',
+              fontSize: '16'
+            }
+            // axisLine: {onZero: false},
+
+          },
+          series: [
+            {
+              name: this.seriesData.effectiveFrontier[0].id,
+              type: 'line',
+              symbolSize: 10,
+              markPoint: {
+                silent: true,
+                data: [{
+                  // name: '推荐组合',
+                  type: 'triangle',
+                  value: '推荐',
+                  xAxis: this.seriesData.effectiveFrontier[1].data[0][0],
+                  yAxis: this.seriesData.effectiveFrontier[1].data[0][1]
+                }]
+
+              },
+              smooth: true,
+              color: '#df0000',
+              data: this.seriesData.effectiveFrontier[0].data
+            },
+            {
+              name: this.seriesData.envelopeLine.id,
+              type: 'line',
+              symbolSize: 10,
+              smooth: true,
+              color: '#409EFF',
+
+              data: this.seriesData.envelopeLine.data
+            }
+
+          ]
+        }
+
+        return option
+      },
+      //  有效前沿
+      drawChartDoublePie:function () {
+        let chart = echarts.init(document.getElementById('doublePie'))
+        if (chart === undefined) {
+          console.error('echarts init dom id failed')
+          return
+        }
+        chart.setOption(this.generatorLineOptionDoublePie())
+        let self = this
+        let work = null
+        chart.on('click', function (params) {
+          let body = {
+            mapId: params.data.id,
+            yield: self.seriesDataDoublePie.yield,
+            risk: self.seriesDataDoublePie.risk,
+            lineType: self.seriesDataDoublePie.lineType,
+            mapType: self.seriesDataDoublePie.id,
+            title: params.data.type
+          }
+          if (params.seriesName === '子类') {
+            self.$emit('save', body)
+          }
+          console.log(111111111111)
+        })
+        // window.addEventListener('resize', function () {
+        //   self.generatorWithAndHeight()
+        //   if (work === null) {
+        //     work = setTimeout(function () {
+        //       chart.resize()
+        //       work = null
+        //     }, 100)
+        //   }
+        // })
+      },
+      generatorLineOptionDoublePie:function () {
+        let self = this
+        var colors = [
+          '#6EB6F2', '#71F16F', '#FFC000', '#384C6C', '#7577F8',
+          '#003366', '#AEABAF', '#00F4D2', '#8084F1', '#FF9F4E',
+          '#4FA2A9', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+          '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089',
+          '#FF4F7F', '#CC6666', '#7f7522', '#2b4490', '#333399',
+          '#70a19f', '#009299', '#78331e', '#3e4145', '#7bbfea',
+          '#339999', '#8f4b38', '#694d9f', '#f26522', '#8e7437',
+          '#45b97c', '#74787c', '#afdfe4', '#fdb933', '#bed742',
+          '#A20055', '#AA0000', '#C63300', '#0000AA', '#2200AA',
+          '#990099', '#00AAAA', '#00AA88', '#00AA55', '#FF1493'
+        ]
+        let option = {
+          title: {
+            text: this.seriesDataDoublePie.title,
+            subtext: '',
+            x: 'center',
+            top: 20,
+            textStyle: {
+              color: '#f8f8f8'
+            }
+          },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            //  data: this.seriesDataDoublePie.legendData
+            data: []
+          },
+          toolbox: {
+            right: 20,
+
+            feature: {
+
+              myTool2: {// 自定义按钮 danielinbiti,这里增加，selfbuttons可以随便取名字
+                show: true, // 是否显示
+                title: '查看明细', // 鼠标移动上去显示的文字
+                icon: 'path://M525.4 721.2H330.9c-9 0-18.5-7.7-18.5-18.1V311c0-9 9.3-18.1 18.5-18.1h336.6c9.3 0 18.5 9.1 18.5 18.1v232.7c0 6 8.8 12.1 15 12.1 6.2 0 15-6 15-12.1V311c0-25.6-25.3-48.9-50.1-48.9h-335c-26.2 0-50.1 23.3-50.1 48.9v389.1c0 36.3 20 51.5 50.1 51.5h197.6c6.2 0 9.3-7.5 9.3-15.1 0-6-6.2-15.3-12.4-15.3zM378.8 580.6c-6.2 0-12.3 8.6-12.3 14.6s6.2 14.6 12.3 14.6h141.4c6.2 0 12.3-5.8 12.3-13.4 0.3-9.5-6.2-15.9-12.3-15.9H378.8z m251.6-91.2c0-6-6.2-14.6-12.3-14.6H375.7c-6.2 0-12.4 8.6-12.4 14.6s6.2 14.6 12.4 14.6h240.8c6.2 0.1 13.9-8.5 13.9-14.6z m-9.2-120.5H378.8c-6.2 0-12.3 8.6-12.3 14.6s6.2 14.6 12.3 14.6h240.8c7.7 0 13.9-8.6 13.9-14.6s-6.2-14.6-12.3-14.6z m119.4 376.6L709 714.1c9.2-12 14.6-27 14.6-43.2 0-39.4-32.1-71.4-71.8-71.4-39.7 0-71.8 32-71.8 71.4s32.1 71.4 71.8 71.4c16.3 0 31.3-5.4 43.4-14.5l31.6 31.5c3.8 3.8 10 3.8 13.8 0 3.8-3.8 3.8-10 0-13.8z m-88.8-23.6c-28.3 0-51.3-22.8-51.3-51s23-51 51.3-51c28.3 0 51.3 22.8 51.3 51s-23 51-51.3 51z', // 图标
+                onclick: function (params) { // 点击事件,这里的option1是chart的option信息
+                  let body = {
+                    yield: self.seriesDataDoublePie.yield,
+                    risk: self.seriesDataDoublePie.risk,
+                    lineType: self.seriesDataDoublePie.lineType,
+                    mapType: self.seriesDataDoublePie.id
+                  }
+
+                  self.$emit('getTableData', body)
+                }
+              },
+              saveAsImage: {
+                name: this.seriesDataDoublePie.title
+              }
+            }
+          },
+          series: [
+            {
+              name: '父类',
+              type: 'pie',
+              radius: [0, '30%'],
+              color: colors,
+              data: this.seriesDataDoublePie.parentData
+            },
+            {
+              name: '子类',
+              type: 'pie',
+              radius: ['40%', '55%'],
+              color: colors,
+              label: {
+                normal: {
+                  formatter: function (params) {
+                    if (params.value !== 0) { return params.data.type } else { return '' }
+                  }
+                }
+              },
+              data: this.seriesDataDoublePie.datas
+            }
+          ]
+        }
+
+        return option
+      },
+      drawChartColumnarFigure:function () {
+        let chart = echarts.init(document.getElementById('columnarFigure'))
+        if (chart === undefined) {
+          console.error('echarts init dom id this.id failed')
+          return
+        }
+        chart.setOption(this.generatorLineOption())
+        let self = this
+        let work = null
+        // window.addEventListener('resize', function () {
+        //   self.generatorWithAndHeight()
+        //   if (work === null) {
+        //     work = setTimeout(function () {
+        //       chart.resize()
+        //       work = null
+        //     }, 100)
+        //   }
+        // })
+      },
+      generatorLineOptionColumnarFigure:function () {
+        // var colors = [
+        //   '#6EB6F2', '#71F16F', '#FFC000', '#384C6C', '#7577F8',
+        //   '#003366', '#AEABAF', '#00F4D2', '#8084F1', '#FF9F4E',
+        //   '#4FA2A9', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+        //   '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089',
+        //   '#FF4F7F', '#CC6666', '#7f7522', '#2b4490', '#333399',
+        //   '#70a19f', '#009299', '#78331e', '#3e4145', '#7bbfea',
+        //   '#339999', '#8f4b38', '#694d9f', '#f26522', '#8e7437',
+        //   '#45b97c', '#74787c', '#afdfe4', '#fdb933', '#bed742',
+        //   '#A20055', '#AA0000', '#C63300', '#0000AA', '#2200AA',
+        //   '#990099', '#00AAAA', '#00AA88', '#00AA55', '#FF1493'
+        // ]
+        let val = this.seriesDataColumnarFigure.datas.map(function(item, index){
+          let itemVal = JSON.parse(JSON.stringify(item))
+          let body
+          if (this.isType === 'modelweight') {
+            body = {
+              type: 'line',
+              stack: '资产权重', // tuiji
+              areaStyleColumnarFigure: this.areaStyleColumnarFigure
+              // symbol: 'none'
+            }
+          } else {
+            body = {
+              type: 'line',
+              stack: '资产堆积' + index, // tuiji
+              areaStyleColumnarFigure: this.areaStyleColumnarFigure
+              // symbol: 'none'
+            }
+          }
+
+          let res = Object.assign(itemVal, body)
+          return res
+        })
+        let option = {
+
+          title: {
+            text: this.seriesDataColumnarFigure.title,
+            subtext: '',
+            x: 'center'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            }
+          },
+          legend: {
+            data: []
+          },
+          toolbox: {
+            right: 20,
+            feature: {
+              saveAsImage: {
+                name: this.seriesDataColumnarFigure.title
+              }
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis: [
+            {
+              type: 'category',
+              boundaryGap: false,
+              data: this.seriesDataColumnarFigure.dates
+
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value',
+              scale: true
+            }
+          ],
+          dataZoom: [
+            {
+              show: true,
+              start: 0,
+              end: 100
+
+            }
+          ],
+          series: val
+          // [
+          //   {
+          //     name: '邮件营销',
+          //     type: 'line',
+          //     stack: '总量',
+          //     areaStyleColumnarFigure: {},
+          //     data: [120, 132, 101, 134, 90, 230, 210]
+          //   },
+          //   {
+          //     name: '联盟广告',
+          //     type: 'line',
+          //     stack: '总量',
+          //     areaStyleColumnarFigure: {},
+          //     data: [220, 182, 191, 234, 290, 330, 310]
+          //   },
+          //   {
+          //     name: '视频广告',
+          //     type: 'line',
+          //     stack: '总量',
+          //     areaStyleColumnarFigure: {},
+          //     data: [150, 232, 201, 154, 190, 330, 410]
+          //   },
+          //   {
+          //     name: '直接访问',
+          //     type: 'line',
+          //     stack: '总量',
+          //     areaStyleColumnarFigure: {normal: {}},
+          //     data: [320, 332, 301, 334, 390, 330, 320]
+          //   },
+          //   {
+          //     name: '搜索引擎',
+          //     type: 'line',
+          //     stack: '总量',
+          //     label: {
+          //       normal: {
+          //         show: true,
+          //         position: 'top'
+          //       }
+          //     },
+          //     areaStyleColumnarFigure: {normal: {}},
+          //     data: [820, 932, 901, 934, 1290, 1330, 1320]
+          //   }
+          // ]
+        }
+
+        return option
+      }
+    }
+  })
+</script>
+</html>

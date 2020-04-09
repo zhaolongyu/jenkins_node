@@ -1,10 +1,11 @@
 const Router = require("express").Router();
 const jwt = require("jsonwebtoken");
-var MongoClient = require("mongodb").MongoClient;
-var url = "mongodb://47.100.188.145:27017/";
 
 Router.post("/login", function(req, res) {
-  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+  global.MongoClient.connect(global.url, { useNewUrlParser: true }, function(
+    err,
+    db
+  ) {
     if (err) throw err;
     var dbo = db.db("runoob");
     var whereStr = { name: req.body.name, password: req.body.password };
@@ -23,7 +24,7 @@ Router.post("/login", function(req, res) {
           let token = jwt.sign(
             { name: req.body.name, password: req.body.password },
             "my_token",
-            { expiresIn: "5000" }
+            { expiresIn: "3H" }
           );
           res.send({
             code: "200",
@@ -36,7 +37,10 @@ Router.post("/login", function(req, res) {
   });
 });
 Router.post("/regis", function(req, res) {
-  MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+  global.MongoClient.connect(global.url, { useNewUrlParser: true }, function(
+    err,
+    db
+  ) {
     if (err) throw err;
     var dbo = db.db("runoob");
     var myobj = { name: req.body.name, password: req.body.password };
