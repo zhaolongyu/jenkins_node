@@ -40,9 +40,9 @@ export default {
         localStorage.setItem("token", res.data.data);
         if (res.data.code === "200") {
           if (res.data.list === "admin") {
-            this.$store.commit("disabledFalse");
+            localStorage.setItem("disabled", "admin");
           } else {
-            this.$store.commit("disabledtrue");
+            localStorage.removeItem("disabled");
           }
           alert(res.data.msg);
           setTimeout(() => {

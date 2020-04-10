@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;">
+  <div style="display:flex; margin:20px">
     <el-card class="box-card" style="flex:1">
       <div slot="header" class="clearfix">
         <span>{{ preview.from }}</span>

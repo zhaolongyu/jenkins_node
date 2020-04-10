@@ -4,9 +4,9 @@
       <div style="">
         <div class="el-radio-group-button">
           <h1>inlist</h1>
-          <h3>sdsd</h3>
         </div>
         <el-menu
+          background-color="#545c64"
           default-active="1-1"
           class="el-menu-vertical-demo"
           :collapse="isCollapse"
@@ -14,28 +14,34 @@
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span slot="title">首页</span>
+              <span class="fontSizehome" slot="title">首页</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item @click="handclick('1-1')" index="1-1"
+              <el-menu-item
+                @click="handclick('1-1')"
+                index="1-1"
+                class="fontSizehome"
                 >日志</el-menu-item
               >
-              <el-menu-item @click="handclick('1-2')" index="1-2"
+              <el-menu-item
+                @click="handclick('1-2')"
+                index="1-2"
+                class="fontSizehome"
                 >编辑</el-menu-item
               >
             </el-menu-item-group>
           </el-submenu>
           <el-menu-item index="2" @click="handclick('2')">
             <i class="el-icon-menu"></i>
-            <span slot="title">导航二</span>
+            <span class="fontSizehome" slot="title">导航二</span>
           </el-menu-item>
           <el-menu-item index="3" @click="handclick('3')">
             <i class="el-icon-document"></i>
-            <span slot="title"> 导航三</span>
+            <span class="fontSizehome" slot="title"> 导航三</span>
           </el-menu-item>
           <el-menu-item index="4" @click="handclick('4')">
             <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
+            <span class="fontSizehome" slot="title">导航四</span>
           </el-menu-item>
           <!-- <el-radio-group
             v-model="isCollapse"
@@ -94,6 +100,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fontSizehome {
+  font-size: 16px;
+  color: #e6dede;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;

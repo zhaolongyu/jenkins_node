@@ -8,4 +8,9 @@
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+$red: #dfe8ea59;
+body {
+  background: $red;
+}
+</style>

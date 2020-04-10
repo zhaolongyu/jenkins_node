@@ -27,7 +27,7 @@
               style="float: right; padding: 3px 0"
               type="text"
               @click="handDelete(coll)"
-              :disabled="$store.state.disabled"
+              :disabled="disabled"
               >删除</el-button
             >
           </div>
@@ -59,6 +59,11 @@ export default {
       reverse: true // 排序
     };
   },
+  computed: {
+    disabled() {
+      return localStorage.getItem("disabled") !== "admin";
+    }
+  },
   methods: {
     handDelete(val) {
       this.loading = true;
@@ -76,6 +81,8 @@ export default {
       });
     },
     handcard(val) {
+      localStorage.setItem("disabled", "admin");
+      console.log(11111111111111);
       this.$emit("handcard", val);
     },
     page() {
@@ -94,7 +101,11 @@ export default {
   }
 };
 </script>
-
+<style>
+.hello .el-card {
+  background: #f5f5f5;
+}
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 /* h1,
