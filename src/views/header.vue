@@ -20,7 +20,6 @@ export default {
   methods: {
     load() {
       this.count += 2;
-      console.log(1);
     }
   }
 };

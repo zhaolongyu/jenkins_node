@@ -56,9 +56,8 @@ export default {
       });
     },
     registered() {
-      this.axios.post("/regis", this.data).then(res => {
+      this.axios.post("/regis", this.data).then(() => {
         // alert(res.data.msg);
-        console.log(res);
       });
     }
   }
