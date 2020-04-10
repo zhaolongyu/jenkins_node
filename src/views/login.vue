@@ -39,6 +39,11 @@ export default {
       this.axios.post("/login", this.data).then(res => {
         localStorage.setItem("token", res.data.data);
         if (res.data.code === "200") {
+          if (res.data.list === "admin") {
+            this.$store.commit("disabledFalse");
+          } else {
+            this.$store.commit("disabledtrue");
+          }
           alert(res.data.msg);
           setTimeout(() => {
             this.$router.push({

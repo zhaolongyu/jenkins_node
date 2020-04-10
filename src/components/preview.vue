@@ -1,12 +1,20 @@
 <template>
-  <div>
-    <el-card class="box-card">
+  <div style="display:flex;">
+    <el-card class="box-card" style="flex:1">
       <div slot="header" class="clearfix">
         <span>{{ preview.from }}</span>
+        <el-button
+          style="float: right; padding: 3px 5px"
+          type="text"
+          @click="handcardreturn()"
+          >返回</el-button
+        >
       </div>
-      <vue-markdown>
-        {{ preview.messageContent }}
-      </vue-markdown>
+      <div id="markdown">
+        <vue-markdown>
+          {{ preview.messageContent }}
+        </vue-markdown>
+      </div>
     </el-card>
   </div>
 </template>
@@ -25,10 +33,16 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      list: []
+    };
   },
   mounted() {},
-  methods: {}
+  methods: {
+    handcardreturn() {
+      this.$emit("handcardreturn");
+    }
+  }
 };
 </script>
 <style>

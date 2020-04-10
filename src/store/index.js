@@ -23,9 +23,16 @@ export default new Vuex.Store({
   namespaced: true,
   state: {
     token: false,
-    test: 2222
+    disabled: true,
+    duration: 1000
   },
   mutations: {
+    disabledFalse() {
+      this.state.disabled = false;
+    },
+    disabledtrue() {
+      this.state.disabled = true;
+    },
     tokenBooleanFalse() {
       this.state.token = false;
     },

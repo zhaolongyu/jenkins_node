@@ -26,11 +26,20 @@ Router.post("/login", function(req, res) {
             "my_token",
             { expiresIn: "3H" }
           );
-          res.send({
-            code: "200",
-            data: token,
-            msg: "登录成功"
-          });
+          if (req.body.name === "admin" && req.body.password === "admin") {
+            res.send({
+              code: "200",
+              data: token,
+              list: "admin",
+              msg: "登录成功"
+            });
+          } else {
+            res.send({
+              code: "200",
+              data: token,
+              msg: "登录成功"
+            });
+          }
         }
         db.close();
       });

@@ -21,6 +21,7 @@
       action="http://47.100.188.145:8090/update"
       multiple
       :file-list="fileList"
+      :on-success="success"
     >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -53,7 +54,33 @@ export default {
   methods: {
     clickdeitor() {
       let data = { messageContent: this.messageContent, from: this.form.name };
-      this.axios.post("/pageStorage", data).then(() => {});
+      if (data.from && data.messageContent) {
+        this.axios.post("/pageStorage", data).then(res => {
+          console.log(res);
+          if (res.data.code === "200") {
+            this.$message({
+              message: "保存成功",
+              type: "success",
+              duration: this.$store.state.duration
+            });
+            this.$emit("handcardreturn");
+          }
+        });
+      } else {
+        this.$message({
+          message: "标题或内容不能为空",
+          type: "warning",
+          duration: this.$store.state.duration
+        });
+      }
+    },
+    success() {
+      this.$message({
+        message: "保存成功",
+        type: "success",
+        duration: this.$store.state.duration
+      });
+      this.$emit("handcardreturn");
     }
   }
 };

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-row style="display: flex;">
-      <div>
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-          <el-radio-button size="mini" :label="false">展开</el-radio-button>
-          <el-radio-button size="mini" :label="true">收起</el-radio-button>
-        </el-radio-group>
+    <el-row style="display: flex;justify-content: center">
+      <div style="">
+        <div class="el-radio-group-button">
+          <h1>inlist</h1>
+          <h3>sdsd</h3>
+        </div>
         <el-menu
           default-active="1-1"
           class="el-menu-vertical-demo"
@@ -18,10 +18,10 @@
             </template>
             <el-menu-item-group>
               <el-menu-item @click="handclick('1-1')" index="1-1"
-                >推荐</el-menu-item
+                >日志</el-menu-item
               >
               <el-menu-item @click="handclick('1-2')" index="1-2"
-                >最新</el-menu-item
+                >编辑</el-menu-item
               >
             </el-menu-item-group>
           </el-submenu>
@@ -37,6 +37,13 @@
             <i class="el-icon-setting"></i>
             <span slot="title">导航四</span>
           </el-menu-item>
+          <!-- <el-radio-group
+            v-model="isCollapse"
+            style="margin:20px 30px 20px 0px;"
+          >
+            <el-radio-button size="mini" :label="false">展开</el-radio-button>
+            <el-radio-button size="mini" :label="true">收起</el-radio-button>
+          </el-radio-group> -->
         </el-menu>
       </div>
       <div style="margin:0 20px;width:60%;">
@@ -44,10 +51,10 @@
           <Header @handcard="handcard"></Header>
         </div>
         <div v-if="iskeepalive === '1-2'">
-          <Home></Home>
+          <Home @handcardreturn="handcardreturn"> </Home>
         </div>
         <div v-if="iskeepalive === 'preview'">
-          <Preview :preview="param"></Preview>
+          <Preview :preview="param" @handcardreturn="handcardreturn"></Preview>
         </div>
       </div>
     </el-row>
@@ -78,6 +85,9 @@ export default {
     handcard(val) {
       this.iskeepalive = "preview";
       this.param = val;
+    },
+    handcardreturn() {
+      this.iskeepalive = "1-1";
     }
   }
 };
@@ -87,5 +97,12 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 400px;
+}
+.el-radio-group-button {
+  width: 100%;
+  background: gray;
+  line-height: 200px;
+  height: 200px;
+  text-align: center;
 }
 </style>

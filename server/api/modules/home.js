@@ -7,10 +7,12 @@ Router.post("/pageStorage", function(req, res) {
   ) {
     if (err) throw err;
     var dbo = db.db("runoob");
+    var myDate = new Date();
     var myobj = [
       {
         messageContent: req.body.messageContent,
-        from: req.body.from
+        from: req.body.from,
+        time: myDate.toLocaleString()
       }
     ];
     console.log(myobj);
@@ -71,8 +73,23 @@ Router.post("/delete", function(req, res) {
   });
 });
 
+var fs = require("fs");
+function delDir(path) {
+  let files = [];
+  if (fs.existsSync(path)) {
+    files = fs.readdirSync(path);
+    files.forEach((file, index) => {
+      let curPath = path + "/" + file;
+      if (fs.statSync(curPath).isDirectory()) {
+        delDir(curPath); //递归删除文件夹
+      } else {
+        fs.unlinkSync(curPath); //删除文件
+      }
+    });
+    fs.rmdirSync(path);
+  }
+}
 Router.post("/update", function(req, res) {
-  var fs = require("fs");
   fs.mkdir("./images", function(error) {
     if (error) {
       return false;
@@ -94,12 +111,17 @@ Router.post("/update", function(req, res) {
       if (err) throw err;
       var dbo = db.db("runoob");
       fs.readFile(JSON.parse(filesTmp).file[0].path, function(err, data) {
-        var myobj = {
-          from: JSON.parse(filesTmp).file[0].originalFilename,
-          messageContent: data.toString("utf-8")
-        };
-        dbo.collection("sizt").insertOne(myobj, function(err) {
+        var myDate = new Date();
+        var myobj = [
+          {
+            from: JSON.parse(filesTmp).file[0].originalFilename,
+            messageContent: data.toString("utf-8"),
+            time: myDate.toLocaleString()
+          }
+        ];
+        dbo.collection("sizt").insertMany(myobj, function(err) {
           if (err) throw err;
+          delDir("./images");
           res.send("1");
           db.close();
         });
