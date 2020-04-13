@@ -14,7 +14,8 @@
     action="http://47.100.188.145:8090/update"
     -->
     <!--  
-    action="http://localhost:3001/update"-->
+    action="http://localhost:3001/update"
+    -->
     <el-upload
       class="upload-demo"
       drag

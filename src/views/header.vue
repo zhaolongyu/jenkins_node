@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div
-      class="infinite-list"
-      v-infinite-scroll="load"
-      style="height:400px;overflow:auto"
-    >
-      <div v-for="i in count" :key="i" class="infinite-list-item">{{ i }}</div>
+    <div class="header">
+      <div class="bar">0101</div>
     </div>
   </div>
 </template>
@@ -24,3 +20,23 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.header {
+  border: 1px solid red;
+  width: 300px;
+  height: 300px;
+  position: relative;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+  background: green;
+}
+</style>

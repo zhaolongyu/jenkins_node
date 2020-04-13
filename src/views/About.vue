@@ -3,7 +3,7 @@
     <el-row style="display: flex;justify-content: center">
       <div style="">
         <div class="el-radio-group-button">
-          <h1>inlist</h1>
+          <h1 id="about">inlist</h1>
         </div>
         <el-menu
           background-color="#545c64"
@@ -51,6 +51,17 @@
             <el-radio-button size="mini" :label="true">收起</el-radio-button>
           </el-radio-group> -->
         </el-menu>
+        <div class="LogoutHeader">
+          <div class="LogoutMiddle">
+            <div @click="clickLogout" style="margin-bottom:20px;">
+              <i class="el-icon-warning-outline"></i>
+              登出
+            </div>
+            <div @click="clickTop" :class="LogoutMiddleTop1">
+              <a href="#about"><i class="el-icon-top"></i> 向上</a>
+            </div>
+          </div>
+        </div>
       </div>
       <div style="margin:0 20px;width:60%;">
         <div v-if="iskeepalive === '1-1'">
@@ -81,7 +92,37 @@ export default {
     return {
       isCollapse: false,
       iskeepalive: "1-1",
-      param: ""
+      param: "",
+      LogoutMiddleTop1: {
+        LogoutMiddleTop: true
+      }
+    };
+  },
+
+  mounted() {
+    let ref = this;
+    window.onscroll = function() {
+      function get_scrollTop_of_body() {
+        //scrollTop能力检测函数
+        var scrollTop;
+        if (typeof window.pageYOffset != "undefined") {
+          scrollTop = window.pageYOffset;
+        } else if (
+          typeof document.compatMode != "undefined" &&
+          document.compatMode != "BackCompat"
+        ) {
+          scrollTop = document.documentElement.scrollTop;
+        } else if (typeof document.body != "undefined") {
+          scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+      }
+      var myScroll = parseInt(get_scrollTop_of_body());
+      if (myScroll > 500) {
+        ref.$set(ref.LogoutMiddleTop1, "LogoutMiddleTop", false);
+      } else {
+        ref.$set(ref.LogoutMiddleTop1, "LogoutMiddleTop", true);
+      }
     };
   },
   methods: {
@@ -94,7 +135,14 @@ export default {
     },
     handcardreturn() {
       this.iskeepalive = "1-1";
-    }
+    },
+    clickLogout() {
+      localStorage.removeItem("token");
+      this.$router.push({
+        path: "/"
+      });
+    },
+    clickTop() {}
   }
 };
 </script>
@@ -114,5 +162,23 @@ export default {
   line-height: 200px;
   height: 200px;
   text-align: center;
+}
+.LogoutHeader {
+  width: 200px;
+  height: 133px;
+  background: gray;
+  position: fixed;
+  bottom: 111px;
+  .LogoutMiddle {
+    font-size: 20px;
+    font-weight: 700;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .LogoutMiddleTop {
+    display: none;
+  }
 }
 </style>
