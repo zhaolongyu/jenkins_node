@@ -56,7 +56,6 @@ export default {
       let data = { messageContent: this.messageContent, from: this.form.name };
       if (data.from && data.messageContent) {
         this.axios.post("/pageStorage", data).then(res => {
-          console.log(res);
           if (res.data.code === "200") {
             this.$message({
               message: "保存成功",

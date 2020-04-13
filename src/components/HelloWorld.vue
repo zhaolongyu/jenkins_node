@@ -82,7 +82,6 @@ export default {
     },
     handcard(val) {
       localStorage.setItem("disabled", "admin");
-      console.log(11111111111111);
       this.$emit("handcard", val);
     },
     page() {

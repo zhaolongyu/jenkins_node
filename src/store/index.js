@@ -26,9 +26,7 @@ export default new Vuex.Store({
     duration: 1000
   },
   mutations: {
-    disabledFalse() {
-      console.log(this.state.disabled, 1111111111);
-    },
+    disabledFalse() {},
     // disabledtrue() {
     //   this.state.disabled = true;
     // },
