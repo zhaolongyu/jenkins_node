@@ -19,19 +19,21 @@ module.exports = {
         }
       }
     },
-    pulgins: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            warnings: false,
-            drop_console: true,//console
-            pure_funcs: ['console.log']//移除console
-          }
-        },
-        sourceMap: config.build.productionSourceMap,
-        parallel: true
-      })
-    ]
+    modules:{
+      pulgins: [
+        new UglifyJsPlugin({
+          uglifyOptions: {
+            compress: {
+              warnings: false,
+              drop_console: true,//console
+              pure_funcs: ['console.log']//移除console
+            }
+          },
+          sourceMap: config.build.productionSourceMap,
+          parallel: true
+        })
+      ]
+    }
     // host: "127.0.0.1",
     // port: 9099
   },
