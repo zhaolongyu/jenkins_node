@@ -20,7 +20,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style >
 .header {
   border: 1px solid red;
   width: 300px;

@@ -29,7 +29,7 @@ axios.interceptors.response.use(
   err => {
     if (err.response.data.code === "401") {
       alert(err.response.data.msg);
-      localStorage.removeItem("token", "");
+      localStorage.removeItem("token");
       store.commit("tokenBooleanFalse");
       Router.replace({
         path: `/login`

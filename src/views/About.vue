@@ -14,34 +14,53 @@
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span class="fontSizehome" slot="title">首页</span>
+              <span
+                class="fontSizehome"
+                slot="title"
+              >首页</span>
             </template>
             <el-menu-item-group>
               <el-menu-item
                 @click="handclick('1-1')"
                 index="1-1"
                 class="fontSizehome"
-                >日志</el-menu-item
-              >
+              >日志</el-menu-item>
               <el-menu-item
                 @click="handclick('1-2')"
                 index="1-2"
                 class="fontSizehome"
-                >编辑</el-menu-item
-              >
+              >编辑</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-menu-item index="2" @click="handclick('2')">
+          <el-menu-item
+            index="2"
+            @click="handclick('2')"
+          >
             <i class="el-icon-menu"></i>
-            <span class="fontSizehome" slot="title">导航二</span>
+            <span
+              class="fontSizehome"
+              slot="title"
+            >导航二</span>
           </el-menu-item>
-          <el-menu-item index="3" @click="handclick('3')">
+          <el-menu-item
+            index="3"
+            @click="handclick('3')"
+          >
             <i class="el-icon-document"></i>
-            <span class="fontSizehome" slot="title"> 导航三</span>
+            <span
+              class="fontSizehome"
+              slot="title"
+            > 导航三</span>
           </el-menu-item>
-          <el-menu-item index="4" @click="handclick('4')">
+          <el-menu-item
+            index="4"
+            @click="handclick('4')"
+          >
             <i class="el-icon-setting"></i>
-            <span class="fontSizehome" slot="title">导航四</span>
+            <span
+              class="fontSizehome"
+              slot="title"
+            >导航四</span>
           </el-menu-item>
           <!-- <el-radio-group
             v-model="isCollapse"
@@ -53,11 +72,17 @@
         </el-menu>
         <div class="LogoutHeader">
           <div class="LogoutMiddle">
-            <div @click="clickLogout" style="margin-bottom:20px;">
+            <div
+              @click="clickLogout"
+              style="margin-bottom:20px;"
+            >
               <i class="el-icon-warning-outline"></i>
               登出
             </div>
-            <div @click="clickTop" :class="LogoutMiddleTop1">
+            <div
+              @click="clickTop"
+              :class="LogoutMiddleTop1"
+            >
               <a href="#about"><i class="el-icon-top"></i> 向上</a>
             </div>
           </div>
@@ -70,41 +95,49 @@
         <div v-if="iskeepalive === '1-2'">
           <Home @handcardreturn="handcardreturn"> </Home>
         </div>
-        <div v-if="iskeepalive === 'preview'">
-          <Preview :preview="param" @handcardreturn="handcardreturn"></Preview>
+        <div v-if="iskeepalive === 'previews'">
+          <Preview
+            :preview="param"
+            @handcardreturn="handcardreturn"
+          ></Preview>
         </div>
       </div>
     </el-row>
   </div>
 </template>
 
-<script>
+<script lang='ts'>
 import Header from "components/HelloWorld.vue";
 import Home from "components/home.vue";
 import Preview from "components/preview.vue";
-export default {
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+interface card {
+  from: String;
+  messageContent: String;
+}
+interface LogoutMiddleTop {
+  LogoutMiddleTop: Boolean;
+}
+
+@Component({
   components: {
     Header,
     Home,
     Preview
-  },
-  data() {
-    return {
-      isCollapse: false,
-      iskeepalive: "1-1",
-      param: "",
-      LogoutMiddleTop1: {
-        LogoutMiddleTop: true
-      }
-    };
-  },
-
+  }
+})
+export default class About extends Vue {
+  private isCollapse: boolean = false;
+  private iskeepalive: string = "1-1";
+  private param:card = {from:"",messageContent:''};
+  private LogoutMiddleTop1:LogoutMiddleTop = {
+    LogoutMiddleTop: true
+  };
   mounted() {
     let ref = this;
     window.onscroll = function() {
-      function get_scrollTop_of_body() {
-        //scrollTop能力检测函数
-        var scrollTop;
+      function get_scrollTop_of_body(): any {
+        var scrollTop: number | string = "";
         if (typeof window.pageYOffset != "undefined") {
           scrollTop = window.pageYOffset;
         } else if (
@@ -117,37 +150,34 @@ export default {
         }
         return scrollTop;
       }
-      var myScroll = parseInt(get_scrollTop_of_body());
+      var myScroll: number = parseInt(get_scrollTop_of_body());
       if (myScroll > 500) {
         ref.$set(ref.LogoutMiddleTop1, "LogoutMiddleTop", false);
       } else {
         ref.$set(ref.LogoutMiddleTop1, "LogoutMiddleTop", true);
       }
     };
-  },
-  methods: {
-    handclick(val) {
-      this.iskeepalive = val;
-    },
-    handcard(val) {
-      this.iskeepalive = "preview";
-      this.param = val;
-    },
-    handcardreturn() {
-      this.iskeepalive = "1-1";
-    },
-    clickLogout() {
-      localStorage.removeItem("token");
-      this.$router.push({
-        path: "/"
-      });
-    },
-    clickTop() {}
   }
-};
+  handclick(val: string): void {
+    this.iskeepalive = val;
+  }
+  handcard(val:card ): void {
+    this.iskeepalive = "previews";
+    this.param = val;
+  }
+  handcardreturn(): void {
+    this.iskeepalive = "1-1";
+  }
+  clickLogout(): void {
+    localStorage.removeItem("token");
+    this.$router.push({
+      path: "/"
+    });
+  }
+  clickTop() {}
+}
 </script>
-
-<style lang="scss" scoped>
+<style scoped>
 .fontSizehome {
   font-size: 16px;
   color: #e6dede;
@@ -169,16 +199,16 @@ export default {
   background: gray;
   position: fixed;
   bottom: 111px;
-  .LogoutMiddle {
-    font-size: 20px;
-    font-weight: 700;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .LogoutMiddleTop {
-    display: none;
-  }
+}
+.LogoutMiddle {
+  font-size: 20px;
+  font-weight: 700;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.LogoutMiddleTop {
+  display: none;
 }
 </style>

@@ -1,17 +1,17 @@
 <template>
   <div id="ddd" :class="[isActive ? bracn : green]">
-    <qrcode :url="qrcodeUrl" :iconurl="iconurl"> </qrcode>
+    <!-- <qrcode :url="qrcodeUrl" :iconurl="iconurl"> </qrcode> -->
     <button @click="clickhandl">切换</button>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import qrcode from "vue_qrcodes";
+// import qrcode from "vue_qrcodes";
 
 export default {
   components: {
-    qrcode
+    // qrcode
   },
   props: {
     test: {

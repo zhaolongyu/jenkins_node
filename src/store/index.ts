@@ -1,9 +1,9 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 Vue.use(Vuex);
 const modulesA = {
-  namespaced: true,
+   namespaced: true,
   state: {
     list: 1
   },
@@ -13,17 +13,15 @@ const modulesA = {
     dsfsd123() {}
   },
   actions: {
-    saveSessionId({ commit }) {
+    saveSessionId( commit:any ):void {
       commit("savelist");
     }
   }
-};
-
+}
 export default new Vuex.Store({
-  namespaced: true,
   state: {
     token: false,
-    duration: 1000
+    duration:1000
   },
   mutations: {
     disabledFalse() {},
@@ -31,10 +29,10 @@ export default new Vuex.Store({
     //   this.state.disabled = true;
     // },
     tokenBooleanFalse() {
-      this.state.token = false;
+      (this as any).state.token = false;
     },
     tokenBooleanTrue() {
-      this.state.token = true;
+      (this as any).state.token = true;
     }
   },
   actions: {
@@ -44,5 +42,5 @@ export default new Vuex.Store({
   },
   modules: {
     modulesA
-  }
+  },
 });

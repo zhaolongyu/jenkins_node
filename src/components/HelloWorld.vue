@@ -1,5 +1,8 @@
 <template>
-  <div class="hello" v-loading="loading">
+  <div
+    class="hello"
+    v-loading="loading"
+  >
     <div style="margin:30px">
       排序：
       <el-radio-group v-model="reverse">
@@ -15,29 +18,23 @@
         placement="top"
       >
         <el-card class="box-card headerAge">
-          <div slot="header" class="clearfix">
+          <div
+            slot="header"
+            class="clearfix"
+          >
             <span>{{ coll.from }}</span>
             <el-button
               style="float: right; padding: 3px 5px"
               type="text"
               @click="handcard(coll)"
-              >预览</el-button
-            >
+            >预览</el-button>
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
               @click="handDelete(coll)"
-              :disabled="disabled"
-              >删除</el-button
-            >
+              :disabled="disabled()"
+            >删除</el-button>
           </div>
-          <!-- <div
-        style="height:100px"
-        @click="handcard(coll)"
-        v-html="coll.messageContent"
-      >
-        {{ converter.makeHtml(coll.messageContent) }}
-      </div> -->
           <vue-markdown>{{ coll.messageContent }}</vue-markdown>
         </el-card>
       </el-timeline-item>
@@ -45,82 +42,80 @@
   </div>
 </template>
 
-<script>
+<script lang='ts'>
 import VueMarkdown from "vue-markdown";
-export default {
-  name: "HelloWorld",
+import { Component, Vue, Watch } from "vue-property-decorator";
+
+interface card {
+  from: String;
+  messageContent: String;
+}
+interface hello {
+  config: String;
+  data: any;
+  header: String;
+}
+function page(targ: any) {
+  return function(targ: any) {
+  };
+}
+@page(Vue.bind(this))
+class pages{}
+
+@Component({
   components: {
     VueMarkdown
-  },
-  data() {
-    return {
-      columns: [],
-      loading: false,
-      reverse: true // 排序
-    };
-  },
-  computed: {
-    disabled() {
-      return localStorage.getItem("disabled") !== "admin";
-    }
-  },
-  methods: {
-    handDelete(val) {
-      this.loading = true;
-      this.axios.post("/delete", { from: val.from }).then(res => {
+  }
+})
+export default class HelloWorld extends Vue {
+  private columns: String[] = [];
+  public loading: Boolean = false;
+  public reverse: Boolean = true;
+
+  mounted(): void {
+    this.page<string>("df");
+  }
+  disabled(): Boolean {
+    return localStorage.getItem("disabled") !== "admin";
+  }
+  handDelete(val: any): void {
+    console.log(val);
+    this.loading = true;
+    (this as any).axios
+      .post("/delete", { from: val.from })
+      .then((res: hello) => {
         if (res.data.code === "200") {
-          this.$message({
+          (this as any).$message({
             message: "保存成功",
             type: "success",
             duration: this.$store.state.duration
           });
           setTimeout(() => {
-            this.page();
+            this.page<string>("df");
           }, 500);
         }
       });
-    },
-    handcard(val) {
-      this.$emit("handcard", val);
-    },
-    page() {
-      this.columns = [];
-      // eslint-disable-next-line no-unused-vars
-      let param = { skip: 0, page: 3 };
-      this.axios.get("/page", { params: {} }).then(res => {
-        this.columns = res.data.data;
-        this.loading = false;
-      });
-    }
-  },
-
-  mounted() {
-    this.page();
   }
-};
+  handcard(val: card) {
+    console.log(val);
+    this.$emit("handcard", val);
+  }
+  list(){
+    console.log(1111111111);
+  }
+  page<T>(val: T) {
+    this.columns = [];
+    // eslint-disable-next-line no-unused-vars
+    let param = { skip: 0, page: 3 };
+    (<any>this).axios.get("/page", { params: {} }).then((res: hello): void => {
+      this.columns = res.data.data;
+      this.loading = false;
+    });
+  }
+}
+
 </script>
 <style>
-.hello .el-card {
-  background: #f5f5f5;
-}
-</style>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-/* h1,
-h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-} */
 .headerAge {
   margin-bottom: 6px;
   overflow: hidden;
