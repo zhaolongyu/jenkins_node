@@ -7,6 +7,7 @@ function resolve (dir) {
 module.exports = {
   outputDir: "./server/public",
   // 生产
+  lintOnSave: false,
   publicPath: "././",
   devServer: {
     proxy: {
@@ -27,18 +28,20 @@ module.exports = {
       .set("@", resolve("./src"))
       .set("views", resolve("./src/views"))
       .set("components", resolve("./src/components"));
-    config.optimization.minimizer = [
+    //set第一个参数：设置的别名，第二个参数：设置的路径
+    config.optimization
+      .minimizer[
       new UglifyJsPlugin({
         uglifyOptions: {
           compress: {
             warnings: false,
-            drop_console: true, //console
-            drop_debugger: true,
-            pure_funcs: ['console.log'] //移除console
+            drop_console: true, // console
+            drop_debugger: false,
+            pure_funcs: ['console.log']// 移除console
           }
         }
       })
     ]
-    //set第一个参数：设置的别名，第二个参数：设置的路径
-  }
+  },
+
 };
