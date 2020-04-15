@@ -19,7 +19,7 @@
     <el-upload
       class="upload-demo"
       drag
-      action="http://47.100.188.145:8090/update"
+      action="http://localhost:3001/update"
       multiple
       :file-list="fileList"
       :on-success="success"

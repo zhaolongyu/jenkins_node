@@ -8,12 +8,12 @@
     <button @click="registered">注册</button>
   </div>
 </template>
-
-<script>
+<script lang="ts">
+import { Vue } from "vue-property-decorator";
 // import { mapState, mapMutations } from "vuex";
 import { createNamespacedHelpers } from "vuex";
-const { mapMutations, mapState } = createNamespacedHelpers("modulesA");
-export default {
+const { mapMutations } = createNamespacedHelpers("modulesA");
+export default Vue.extend({
   data() {
     return {
       data: {
@@ -22,14 +22,7 @@ export default {
       }
     };
   },
-  computed: {
-    ...mapState({
-      a: state => {
-        return state.stoken;
-      },
-      b: state => state.list
-    })
-  },
+  computed: {},
   mounted() {
     this.savelist();
   },
@@ -61,7 +54,7 @@ export default {
       });
     }
   }
-};
+});
 </script>
 
 <style></style>
