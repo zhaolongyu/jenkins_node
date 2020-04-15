@@ -8,7 +8,7 @@ import "element-ui/lib/theme-chalk/index.css";
 // 开发
 // axios.defaults.baseURL = "/api/";
 // 生产
-axios.defaults.baseURL = "http://47.100.188.145:8090";
+axios.defaults.baseURL = "http://47.100.188.145:8090/";
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.prototype.axios = axios
