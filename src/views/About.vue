@@ -170,7 +170,7 @@ export default class About extends Vue {
   }
   clickLogout(): void {
     localStorage.removeItem("token");
-    this.$router.push({
+    (<any>this).$router.push({
       path: "/"
     });
   }

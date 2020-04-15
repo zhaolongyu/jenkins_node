@@ -44,7 +44,7 @@ export default class Login extends Vue {
         }
         alert(res.data.msg);
         setTimeout(() => {
-          this.$router.push({
+          (<any>this).$router.push({
             path: "/about"
           });
         }, 500);
