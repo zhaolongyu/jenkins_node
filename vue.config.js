@@ -9,6 +9,20 @@ module.exports = {
   // 生产
   lintOnSave: false,
   publicPath: "././",
+  configureWebpack: {
+    optimization: {
+      minimizer: [
+        new UglifyJsPlugin({
+          uglifyOptions: {
+            warnings: false,
+            compress: {
+              pure_funcs: ['console.log', 'console.debug']//移除console
+            }
+          }
+        })
+      ]
+    },
+  },
   devServer: {
     proxy: {
       "/api": {
@@ -29,19 +43,6 @@ module.exports = {
       .set("views", resolve("./src/views"))
       .set("components", resolve("./src/components"));
     //set第一个参数：设置的别名，第二个参数：设置的路径
-    config.optimization
-      .minimizer[
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compress: {
-            warnings: false,
-            drop_console: true, // console
-            drop_debugger: false,
-            pure_funcs: ['console.log']// 移除console
-          }
-        }
-      })
-    ]
   },
 
 };
